@@ -8,11 +8,21 @@ import org.junit.jupiter.api.Test;
 
 class CaseCatalogServiceTest {
 
-    private final CaseRepository caseRepository = () -> List.of(
-        new CaseRecord(1L, "Missing documents", CaseStatus.OPEN),
-        new CaseRecord(2L, "Payment dispute", CaseStatus.IN_REVIEW),
-        new CaseRecord(3L, "Policy update", CaseStatus.CLOSED)
-    );
+    private final CaseRepository caseRepository = new CaseRepository() {
+        @Override
+        public CaseRecord save(CaseRecord caseRecord) {
+            return caseRecord;
+        }
+
+        @Override
+        public List<CaseRecord> findAll() {
+            return List.of(
+                new CaseRecord(1L, "Missing documents", CaseStatus.OPEN),
+                new CaseRecord(2L, "Payment dispute", CaseStatus.IN_REVIEW),
+                new CaseRecord(3L, "Policy update", CaseStatus.CLOSED)
+            );
+        }
+    };
 
     private final CaseCatalogService service = new CaseCatalogService(caseRepository, new CaseAttentionPolicy());
 

@@ -15,6 +15,11 @@ public class CaseCatalogService {
         this.caseAttentionPolicy = caseAttentionPolicy;
     }
 
+    public CaseSummary createCase(CaseRecord caseRecord) {
+        CaseRecord savedCase = caseRepository.save(new CaseRecord(null, caseRecord.title(), caseRecord.status()));
+        return toSummary(savedCase);
+    }
+
     public List<CaseSummary> findCases(Integer limit, CaseStatus status) {
         long safeLimit = limit == null ? Long.MAX_VALUE : Math.max(limit, 0);
 

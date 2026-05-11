@@ -11,8 +11,11 @@ import com.ping.case_tracker.casework.CaseAttentionPolicy;
 import com.ping.case_tracker.casework.InMemoryCaseRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 
 @WebMvcTest(CaseController.class)
 @Import({CaseCatalogService.class, CaseAttentionPolicy.class, InMemoryCaseRepository.class})
@@ -51,5 +54,22 @@ class CaseControllerTest {
 		this.mockMvc.perform(get("/api/cases?limit=-1"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.length()").value(0));
+	}
+
+	@Test
+	void createCaseReturnsCreatedSummary() throws Exception {
+		this.mockMvc.perform(post("/api/cases")
+				.contentType(APPLICATION_JSON)
+				.content("""
+					{
+					"title": "New case",
+					"status": "OPEN"
+					}
+					"""))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.id").isNumber())
+			.andExpect(jsonPath("$.title").value("New case"))
+			.andExpect(jsonPath("$.status").value("OPEN"))
+			.andExpect(jsonPath("$.attentionLevel").value("IMMEDIATE"));
 	}
 }
