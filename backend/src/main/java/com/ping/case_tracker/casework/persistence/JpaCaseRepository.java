@@ -25,6 +25,17 @@ public class JpaCaseRepository implements CaseRepository {
     }
 
     @Override
+    public CaseRecord update(CaseRecord caseRecord) {
+        CaseEntity savedCase = repository.save(new CaseEntity(caseRecord.id(), caseRecord.title(), caseRecord.status()));
+        return new CaseRecord(savedCase.getId(), savedCase.getTitle(), savedCase.getStatus());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
     public List<CaseRecord> findAll() {
         return repository.findAll().stream()
             .map(caseEntity -> new CaseRecord(caseEntity.getId(), caseEntity.getTitle(), caseEntity.getStatus()))

@@ -35,6 +35,23 @@ public class InMemoryCaseRepository implements CaseRepository {
     }
 
     @Override
+    public CaseRecord update(CaseRecord caseRecord) {
+        for (int index = 0; index < cases.size(); index++) {
+            if (cases.get(index).id().equals(caseRecord.id())) {
+                cases.set(index, caseRecord);
+                return caseRecord;
+            }
+        }
+
+        throw new IllegalArgumentException("Case not found: " + caseRecord.id());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        cases.removeIf(caseRecord -> caseRecord.id().equals(id));
+    }
+
+    @Override
     public List<CaseRecord> findAll() {
         return cases;
     }

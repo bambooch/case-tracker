@@ -12,6 +12,9 @@ import com.ping.case_tracker.casework.CaseSummary;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -36,5 +39,16 @@ public class CaseController {
     @ResponseStatus(HttpStatus.CREATED)
     public CaseSummary createCase(@Valid @RequestBody CaseRecord caseRecord) {
         return caseCatalogService.createCase(caseRecord);
+    }
+
+    @PutMapping("/api/cases/{id}")
+    public CaseSummary updateCase(@PathVariable Long id, @Valid @RequestBody CaseRecord caseRecord) {
+        return caseCatalogService.updateCase(id, caseRecord);
+    }
+
+    @DeleteMapping("/api/cases/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCase(@PathVariable Long id) {
+        caseCatalogService.deleteCase(id);
     }
 }

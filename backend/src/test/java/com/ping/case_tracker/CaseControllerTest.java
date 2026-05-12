@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.ping.case_tracker.casework.CaseCatalogService;
@@ -12,6 +13,8 @@ import com.ping.case_tracker.casework.InMemoryCaseRepository;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -57,6 +60,7 @@ class CaseControllerTest {
 	}
 
 	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
 	void createCaseReturnsCreatedSummary() throws Exception {
 		this.mockMvc.perform(post("/api/cases")
 				.contentType(APPLICATION_JSON)
@@ -95,5 +99,35 @@ class CaseControllerTest {
 					}
 					"""))
 			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+	void updateCaseReturnsUpdatedSummary() throws Exception {
+		this.mockMvc.perform(put("/api/cases/1")
+				.contentType(APPLICATION_JSON)
+				.content("""
+					{
+					"title": "Updated case",
+					"status": "IN_REVIEW"
+					}
+					"""))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id").value(1))
+			.andExpect(jsonPath("$.title").value("Updated case"))
+			.andExpect(jsonPath("$.status").value("IN_REVIEW"))
+			.andExpect(jsonPath("$.attentionLevel").value("FOLLOW_UP"));
+	}
+
+	@Test
+	@DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+	void deleteCaseRemovesTheCase() throws Exception {
+		this.mockMvc.perform(delete("/api/cases/1"))
+			.andExpect(status().isNoContent());
+
+		this.mockMvc.perform(get("/api/cases"))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.length()").value(8))
+			.andExpect(jsonPath("$[?(@.id == 1)]").isEmpty());
 	}
 }

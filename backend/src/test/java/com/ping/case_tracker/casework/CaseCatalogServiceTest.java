@@ -15,6 +15,15 @@ class CaseCatalogServiceTest {
         }
 
         @Override
+        public CaseRecord update(CaseRecord caseRecord) {
+            return caseRecord;
+        }
+
+        @Override
+        public void deleteById(Long id) {
+        }
+
+        @Override
         public List<CaseRecord> findAll() {
             return List.of(
                 new CaseRecord(1L, "Missing documents", CaseStatus.OPEN),

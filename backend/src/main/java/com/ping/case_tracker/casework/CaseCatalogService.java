@@ -20,6 +20,15 @@ public class CaseCatalogService {
         return toSummary(savedCase);
     }
 
+    public CaseSummary updateCase(Long id, CaseRecord caseRecord) {
+        CaseRecord updatedCase = caseRepository.update(new CaseRecord(id, caseRecord.title(), caseRecord.status()));
+        return toSummary(updatedCase);
+    }
+
+    public void deleteCase(Long id) {
+        caseRepository.deleteById(id);
+    }
+
     public List<CaseSummary> findCases(Integer limit, CaseStatus status) {
         long safeLimit = limit == null ? Long.MAX_VALUE : Math.max(limit, 0);
 
