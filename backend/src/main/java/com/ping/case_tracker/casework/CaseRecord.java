@@ -1,4 +1,7 @@
 package com.ping.case_tracker.casework;
 
-public record CaseRecord(Long id, String title, CaseStatus status) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record CaseRecord(Long id, @NotBlank String title, @NotNull CaseStatus status) {
 }

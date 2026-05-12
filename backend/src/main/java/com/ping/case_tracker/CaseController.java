@@ -2,6 +2,8 @@ package com.ping.case_tracker;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import com.ping.case_tracker.casework.CaseCatalogService;
 import com.ping.case_tracker.casework.CaseRecord;
 import com.ping.case_tracker.casework.CaseStatus;
@@ -32,7 +34,7 @@ public class CaseController {
 
     @PostMapping("/api/cases")
     @ResponseStatus(HttpStatus.CREATED)
-    public CaseSummary createCase(@RequestBody CaseRecord caseRecord) {
+    public CaseSummary createCase(@Valid @RequestBody CaseRecord caseRecord) {
         return caseCatalogService.createCase(caseRecord);
     }
 }

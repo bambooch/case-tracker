@@ -72,4 +72,28 @@ class CaseControllerTest {
 			.andExpect(jsonPath("$.status").value("OPEN"))
 			.andExpect(jsonPath("$.attentionLevel").value("IMMEDIATE"));
 	}
+
+	@Test
+	void createCaseWithoutTitleReturnsBadRequest() throws Exception {
+		this.mockMvc.perform(post("/api/cases")
+				.contentType(APPLICATION_JSON)
+				.content("""
+					{
+					"status": "OPEN"
+					}
+					"""))
+			.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void createCaseWithoutStatusReturnsBadRequest() throws Exception {
+		this.mockMvc.perform(post("/api/cases")
+				.contentType(APPLICATION_JSON)
+				.content("""
+					{
+					"title": "New case"
+					}
+					"""))
+			.andExpect(status().isBadRequest());
+	}
 }
