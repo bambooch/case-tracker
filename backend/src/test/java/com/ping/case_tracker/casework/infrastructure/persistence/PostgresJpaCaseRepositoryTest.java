@@ -1,9 +1,12 @@
-package com.ping.case_tracker.casework;
+package com.ping.case_tracker.casework.infrastructure.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.ping.case_tracker.PostgresContainerConfiguration;
-import com.ping.case_tracker.casework.persistence.JpaCaseRepository;
+import com.ping.case_tracker.support.PostgresContainerConfiguration;
+import com.ping.case_tracker.casework.domain.model.records.Case;
+import com.ping.case_tracker.casework.domain.repository.CaseRepository;
+import com.ping.case_tracker.casework.domain.model.enums.CaseStatus;
+import com.ping.case_tracker.casework.infrastructure.persistence.repository.JpaCaseRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +24,15 @@ class PostgresJpaCaseRepositoryTest {
 
     @Test
     void savesCaseAndReadsItBackFromPostgreSql() {
-        CaseRecord savedCase = repository.save(new CaseRecord(null, "Postgres check", CaseStatus.OPEN));
+        Case saved = repository.save(new Case(null, "Postgres check", CaseStatus.OPEN));
 
-        assertThat(savedCase.id()).isNotNull();
+        assertThat(saved.id()).isNotNull();
         assertThat(repository.findAll())
-            .filteredOn(caseRecord -> "Postgres check".equals(caseRecord.title()))
+            .filteredOn(c -> "Postgres check".equals(c.title()))
             .singleElement()
-            .satisfies(caseRecord -> {
-                assertThat(caseRecord.title()).isEqualTo("Postgres check");
-                assertThat(caseRecord.status()).isEqualTo(CaseStatus.OPEN);
+            .satisfies(c -> {
+                assertThat(c.title()).isEqualTo("Postgres check");
+                assertThat(c.status()).isEqualTo(CaseStatus.OPEN);
             });
     }
 }
