@@ -193,4 +193,85 @@ describe('App', () => {
     expect(titleInput).toHaveValue('')
     expect(statusSelect).toHaveValue('')
   })
+
+  it('updates a case from the list', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({
+        json: async () => [
+          {
+            id: 1,
+            title: 'Missing documents',
+            status: 'OPEN',
+            attentionLevel: 'IMMEDIATE',
+          },
+        ],
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          id: 1,
+          title: 'Updated documents',
+          status: 'IN_REVIEW',
+          attentionLevel: 'FOLLOW_UP',
+        }),
+      } as Response)
+
+    render(<App />)
+
+    const user = userEvent.setup()
+
+    await screen.findByText('Missing documents')
+
+    await user.click(screen.getByRole('button', { name: 'Edit Missing documents' }))
+    await user.clear(screen.getByLabelText('Edit title'))
+    await user.type(screen.getByLabelText('Edit title'), 'Updated documents')
+    await user.selectOptions(screen.getByLabelText('Edit status'), 'IN_REVIEW')
+    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+
+    expect(fetchSpy).toHaveBeenNthCalledWith(
+      2,
+      '/api/cases/1',
+      expect.objectContaining({
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: 'Updated documents',
+          status: 'IN_REVIEW',
+        }),
+      }),
+    )
+
+    expect(await screen.findByText('Updated documents')).toBeInTheDocument()
+    expect(screen.getByText('IN_REVIEW')).toBeInTheDocument()
+  })
+
+  it('deletes a case from the list', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({
+        json: async () => [
+          {
+            id: 1,
+            title: 'Missing documents',
+            status: 'OPEN',
+            attentionLevel: 'IMMEDIATE',
+          },
+        ],
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+      } as Response)
+
+    render(<App />)
+
+    const user = userEvent.setup()
+
+    await screen.findByText('Missing documents')
+
+    await user.click(screen.getByRole('button', { name: 'Delete Missing documents' }))
+
+    expect(fetchSpy).toHaveBeenNthCalledWith(2, '/api/cases/1', { method: 'DELETE' })
+    expect(screen.queryByText('Missing documents')).not.toBeInTheDocument()
+  })
 })
