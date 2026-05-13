@@ -1,6 +1,6 @@
-package com.ping.case_tracker.casework.persistence;
+package com.ping.case_tracker.casework.infrastructure.persistence.entity;
 
-import com.ping.case_tracker.casework.CaseStatus;
+import com.ping.case_tracker.casework.domain.model.enums.CaseStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,21 +29,21 @@ public class CaseEntity {
     protected CaseEntity() {
     }
 
-    CaseEntity(Long id, String title, CaseStatus status) {
+    public CaseEntity(Long id, String title, CaseStatus status) {
         this.id = id;
         this.title = title;
         this.status = status;
     }
 
-    Long getId() {
+    public Long getId() {
         return id;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    CaseStatus getStatus() {
+    public CaseStatus getStatus() {
         return status;
     }
 }
