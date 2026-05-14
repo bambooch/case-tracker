@@ -3,9 +3,9 @@ import type { CaseSummary } from './caseSummary'
 export const caseStatusOptions = ['OPEN', 'IN_REVIEW', 'CLOSED'] as const
 
 export const caseStatusLabels: Record<(typeof caseStatusOptions)[number], string> = {
-  OPEN: 'Open',
-  IN_REVIEW: 'In review',
-  CLOSED: 'Closed',
+  OPEN: 'Otvoreno',
+  IN_REVIEW: 'U pregledu',
+  CLOSED: 'Zatvoreno',
 }
 
 export function summarizeCases(cases: CaseSummary[]) {

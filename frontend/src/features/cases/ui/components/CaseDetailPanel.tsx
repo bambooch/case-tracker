@@ -61,7 +61,7 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
       onDetailUpdate({ title: updated.title, status: updated.status })
       setIsEditing(false)
     } catch {
-      setEditError('Could not update case.')
+      setEditError('Nije moguće ažurirati predmet.')
     }
   }
 
@@ -71,7 +71,7 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
       await deleteCase(detail.id)
       navigate('/cases')
     } catch {
-      setDeleteError('Could not delete case.')
+      setDeleteError('Nije moguće obrisati predmet.')
       setShowDeleteConfirm(false)
     }
   }
@@ -82,12 +82,12 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
         {isEditing ? (
           <form onSubmit={(e) => void handleSubmitEdit(e)} className="space-y-4">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-orange-700">Editing</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-orange-700">Uređivanje</p>
               <button
                 type="button"
                 className="rounded-full p-2 text-slate-400 transition-colors hover:bg-stone-100 hover:text-slate-700"
                 onClick={cancelEditing}
-                aria-label="Cancel"
+                aria-label="Otkaži"
               >
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                   <path d="M3 3L15 15M15 3L3 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -102,7 +102,7 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
             <div className="grid gap-4 sm:grid-cols-[1fr_200px]">
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-slate-700" htmlFor="edit-title">
-                  Title
+                  Naziv
                 </label>
                 <input
                   className={inputClasses}
@@ -133,10 +133,10 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
             </div>
             <div className="flex gap-3">
               <button type="submit" className={primaryButtonClasses}>
-                Save changes
+                Spremi izmjene
               </button>
               <button type="button" className={secondaryButtonClasses} onClick={cancelEditing}>
-                Cancel
+                Otkaži
               </button>
             </div>
           </form>
@@ -144,7 +144,7 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
           <>
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Case #{detail.id}</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Predmet #{detail.id}</p>
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <h1 className="font-display text-2xl text-slate-950 sm:text-3xl">{detail.title}</h1>
                 </div>
@@ -164,21 +164,21 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
 
               <div className="flex shrink-0 items-center gap-2">
                 <button type="button" className={secondaryButtonClasses} onClick={startEditing}>
-                  Edit
+                  Uredi
                 </button>
                 {showDeleteConfirm ? (
                   <>
-                    <span className="text-sm font-semibold text-rose-700">Delete?</span>
+                    <span className="text-sm font-semibold text-rose-700">Obrisati?</span>
                     <button type="button" className={dangerButtonClasses} onClick={() => void handleDelete()}>
-                      Confirm
+                      Potvrdi
                     </button>
                     <button type="button" className={secondaryButtonClasses} onClick={() => setShowDeleteConfirm(false)}>
-                      Cancel
+                      Otkaži
                     </button>
                   </>
                 ) : (
                   <button type="button" className={dangerButtonClasses} onClick={() => setShowDeleteConfirm(true)}>
-                    Delete
+                    Obriši
                   </button>
                 )}
               </div>
@@ -196,14 +196,14 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
                 className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${activeTab === 'notes' ? 'bg-slate-950 text-white' : 'text-slate-500 hover:bg-stone-100 hover:text-slate-900'}`}
                 onClick={() => setActiveTab('notes')}
               >
-                Notes ({notesHook.notes.length})
+                Bilješke ({notesHook.notes.length})
               </button>
               <button
                 type="button"
                 className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${activeTab === 'participants' ? 'bg-slate-950 text-white' : 'text-slate-500 hover:bg-stone-100 hover:text-slate-900'}`}
                 onClick={() => setActiveTab('participants')}
               >
-                Participants ({participantsHook.participants.length})
+                Učesnici ({participantsHook.participants.length})
               </button>
             </div>
           </>
@@ -270,7 +270,7 @@ export function CaseDetailPanel({ caseId, parties }: PanelProps) {
         const data = await getCaseDetail(caseId)
         setDetail(data)
       } catch {
-        setLoadError('Could not load case details.')
+        setLoadError('Nije moguće učitati detalje predmeta.')
       } finally {
         setLoading(false)
       }
@@ -282,7 +282,7 @@ export function CaseDetailPanel({ caseId, parties }: PanelProps) {
   if (loading) {
     return (
       <section className="rounded-[2rem] border border-white/70 bg-white/75 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur sm:p-8">
-        <p className="text-sm text-slate-500">Loading case details…</p>
+        <p className="text-sm text-slate-500">Učitavanje detalja…</p>
       </section>
     )
   }

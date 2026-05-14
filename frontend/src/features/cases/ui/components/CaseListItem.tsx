@@ -31,31 +31,31 @@ export function CaseListItem({ caseSummary, onDelete }: CaseListItemProps) {
               {caseSummary.attentionLevel}
             </span>
           </div>
-          <p className="mt-1 text-sm text-slate-400">Case #{caseSummary.id}</p>
+          <p className="mt-1 text-sm text-slate-400">Predmet #{caseSummary.id}</p>
         </Link>
 
         <div className="flex shrink-0 flex-wrap items-center gap-2 lg:justify-end">
           {showDeleteConfirm ? (
             <>
-              <span className="text-sm font-semibold text-rose-700">Delete?</span>
+              <span className="text-sm font-semibold text-rose-700">Obrisati?</span>
               <button
                 type="button"
                 className={dangerButtonClasses}
                 onClick={() => void onDelete(caseSummary.id).then(() => setShowDeleteConfirm(false))}
               >
-                Confirm
+                Potvrdi
               </button>
               <button type="button" className={secondaryButtonClasses} onClick={() => setShowDeleteConfirm(false)}>
-                Cancel
+                Otkaži
               </button>
             </>
           ) : (
             <>
               <Link to={`/cases/${caseSummary.id}`} className={primaryButtonClasses}>
-                View details →
+                Pogledaj detalje →
               </Link>
               <button type="button" className={dangerButtonClasses} onClick={() => setShowDeleteConfirm(true)}>
-                Delete
+                Obriši
               </button>
             </>
           )}

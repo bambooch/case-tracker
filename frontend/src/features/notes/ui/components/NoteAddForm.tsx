@@ -19,7 +19,7 @@ export function NoteAddForm({ draft, onDraftChange, onSubmit }: Props) {
     <form className="space-y-3" onSubmit={(e) => void handleSubmit(e)}>
       <div className="space-y-2">
         <label className="text-sm font-semibold text-slate-700" htmlFor="note-content">
-          Content
+          Sadržaj
         </label>
         <textarea
           className={`${inputClasses} min-h-[5rem] resize-y`}
@@ -31,7 +31,7 @@ export function NoteAddForm({ draft, onDraftChange, onSubmit }: Props) {
       </div>
       <div className="space-y-2">
         <label className="text-sm font-semibold text-slate-700" htmlFor="note-author">
-          Author <span className="font-normal text-slate-400">(optional)</span>
+          Autor <span className="font-normal text-slate-400">(opcionalno)</span>
         </label>
         <input
           className={inputClasses}
@@ -43,7 +43,7 @@ export function NoteAddForm({ draft, onDraftChange, onSubmit }: Props) {
         />
       </div>
       <button className={primaryButtonClasses} type="submit" disabled={!draft.content.trim()}>
-        Add note
+        Dodaj bilješku
       </button>
     </form>
   )

@@ -49,7 +49,7 @@ export function ParticipantListItem({
               className="text-xs font-semibold text-slate-600"
               htmlFor={`edit-role-${participant.partyId}`}
             >
-              Role
+              Uloga
             </label>
             <select
               className={inputClasses}
@@ -66,10 +66,10 @@ export function ParticipantListItem({
           </div>
           <div className="flex gap-2">
             <button className={primaryButtonClasses} type="submit">
-              Save
+              Spremi
             </button>
             <button className={secondaryButtonClasses} type="button" onClick={onCancelEditing}>
-              Cancel
+              Otkaži
             </button>
           </div>
         </form>
@@ -89,14 +89,14 @@ export function ParticipantListItem({
               type="button"
               onClick={() => onStartEditing(participant)}
             >
-              Edit role
+              Uredi ulogu
             </button>
             <button
               className={dangerButtonClasses}
               type="button"
               onClick={() => void onRemove(participant.partyId)}
             >
-              Remove
+              Ukloni
             </button>
           </div>
         </div>

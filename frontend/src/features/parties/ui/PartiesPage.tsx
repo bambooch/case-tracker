@@ -8,10 +8,10 @@ export function PartiesPage() {
     <div className="px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-8">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-orange-700">Registry</p>
-          <h1 className="mt-2 font-display text-4xl leading-tight text-slate-950 sm:text-5xl">Parties</h1>
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-orange-700">Registar</p>
+          <h1 className="mt-2 font-display text-4xl leading-tight text-slate-950 sm:text-5xl">Stranke</h1>
           <p className="mt-4 max-w-2xl text-lg text-slate-600">
-            Manage all parties. Parties can be assigned as participants to cases.
+            Upravljajte svim strankama. Stranke se mogu dodijeliti kao učesnici predmetima.
           </p>
         </div>
 

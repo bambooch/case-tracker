@@ -12,14 +12,14 @@ export function NavBar() {
     <nav className="sticky top-0 z-40 border-b border-white/10 bg-slate-950 shadow-lg">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <NavLink to="/" className="font-display text-xl font-bold tracking-tight text-white">
-          Case Tracker
+          Evidencija predmeta
         </NavLink>
         <div className="flex gap-1">
           <NavLink to="/cases" className={linkClass}>
-            Cases
+            Predmeti
           </NavLink>
           <NavLink to="/parties" className={linkClass}>
-            Parties
+            Stranke
           </NavLink>
         </div>
       </div>

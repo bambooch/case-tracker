@@ -34,7 +34,7 @@ export function NoteListItem({
     await onSubmitEdit()
   }
 
-  const formattedDate = new Date(note.createdAt).toLocaleDateString('en-GB', {
+  const formattedDate = new Date(note.createdAt).toLocaleDateString('bs-Latn-BA', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -51,10 +51,10 @@ export function NoteListItem({
           />
           <div className="flex flex-wrap gap-2">
             <button className={primaryButtonClasses} type="submit" disabled={!editContent.trim()}>
-              Save
+              Spremi
             </button>
             <button className={secondaryButtonClasses} type="button" onClick={onCancelEditing}>
-              Cancel
+              Otkaži
             </button>
           </div>
         </form>
@@ -69,10 +69,10 @@ export function NoteListItem({
           </div>
           <div className="flex flex-wrap gap-2 shrink-0">
             <button className={secondaryButtonClasses} type="button" onClick={() => onStartEditing(note)}>
-              Edit
+              Uredi
             </button>
             <button className={dangerButtonClasses} type="button" onClick={() => void onDelete(note.id)}>
-              Delete
+              Obriši
             </button>
           </div>
         </div>

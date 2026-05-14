@@ -20,7 +20,7 @@ export function PartyCreateForm({ draft, onDraftChange, onSubmit }: Props) {
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-slate-700" htmlFor="party-name">
-            Name
+            Ime
           </label>
           <input
             className={inputClasses}
@@ -33,7 +33,7 @@ export function PartyCreateForm({ draft, onDraftChange, onSubmit }: Props) {
         </div>
         <div className="space-y-2">
           <label className="text-sm font-semibold text-slate-700" htmlFor="party-email">
-            Email <span className="font-normal text-slate-400">(optional)</span>
+            Email <span className="font-normal text-slate-400">(opcionalno)</span>
           </label>
           <input
             className={inputClasses}
@@ -46,7 +46,7 @@ export function PartyCreateForm({ draft, onDraftChange, onSubmit }: Props) {
         </div>
       </div>
       <button className={primaryButtonClasses} type="submit" disabled={!draft.name.trim()}>
-        Create party
+        Kreiraj stranku
       </button>
     </form>
   )

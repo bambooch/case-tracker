@@ -2,10 +2,10 @@ export const participantRoles = ['CLAIMANT', 'RESPONDENT', 'COUNSEL', 'WITNESS']
 export type ParticipantRole = (typeof participantRoles)[number]
 
 export const participantRoleLabels: Record<ParticipantRole, string> = {
-  CLAIMANT: 'Claimant',
-  RESPONDENT: 'Respondent',
-  COUNSEL: 'Counsel',
-  WITNESS: 'Witness',
+  CLAIMANT: 'Tužilac',
+  RESPONDENT: 'Tuženi',
+  COUNSEL: 'Advokat',
+  WITNESS: 'Svjedok',
 }
 
 export const roleBadgeClasses: Record<string, string> = {

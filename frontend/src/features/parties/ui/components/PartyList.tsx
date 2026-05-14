@@ -69,7 +69,7 @@ export function PartyList({
 
       {parties.length === 0 ? (
         <div className="rounded-[1.5rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-8 text-center text-sm text-slate-500">
-          No parties yet. Create the first one to add participants to cases.
+          Nema stranaka. Kreirajte prvu da dodate učesnike predmetima.
         </div>
       ) : null}
     </div>

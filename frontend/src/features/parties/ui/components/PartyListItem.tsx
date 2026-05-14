@@ -41,7 +41,7 @@ export function PartyListItem({
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-600" htmlFor={`edit-party-name-${party.id}`}>
-                Name
+                Ime
               </label>
               <input
                 className={inputClasses}
@@ -66,10 +66,10 @@ export function PartyListItem({
           </div>
           <div className="flex gap-2">
             <button className={primaryButtonClasses} type="submit" disabled={!editDraft.name.trim()}>
-              Save changes
+              Spremi izmjene
             </button>
             <button className={secondaryButtonClasses} type="button" onClick={onCancelEditing}>
-              Cancel
+              Otkaži
             </button>
           </div>
         </form>
@@ -83,10 +83,10 @@ export function PartyListItem({
           </div>
           <div className="flex flex-wrap gap-2">
             <button className={secondaryButtonClasses} type="button" onClick={() => onStartEditing(party)}>
-              Edit {party.name}
+              Uredi {party.name}
             </button>
             <button className={dangerButtonClasses} type="button" onClick={() => void onDelete(party.id)}>
-              Delete {party.name}
+              Obriši {party.name}
             </button>
           </div>
         </div>

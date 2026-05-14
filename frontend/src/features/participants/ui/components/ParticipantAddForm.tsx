@@ -22,7 +22,7 @@ export function ParticipantAddForm({ draft, onDraftChange, onSubmit, parties }: 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-slate-700" htmlFor="participant-party">
-            Party
+            Stranka
           </label>
           <select
             className={inputClasses}
@@ -33,7 +33,7 @@ export function ParticipantAddForm({ draft, onDraftChange, onSubmit, parties }: 
             }
           >
             <option value="" disabled>
-              Select party
+              Odaberite stranku
             </option>
             {parties.map((party) => (
               <option key={party.id} value={party.id}>
@@ -44,7 +44,7 @@ export function ParticipantAddForm({ draft, onDraftChange, onSubmit, parties }: 
         </div>
         <div className="space-y-2">
           <label className="text-sm font-semibold text-slate-700" htmlFor="participant-role">
-            Role
+            Uloga
           </label>
           <select
             className={inputClasses}
@@ -55,7 +55,7 @@ export function ParticipantAddForm({ draft, onDraftChange, onSubmit, parties }: 
             }
           >
             <option value="" disabled>
-              Select role
+              Odaberite ulogu
             </option>
             {participantRoles.map((role) => (
               <option key={role} value={role}>
@@ -66,7 +66,7 @@ export function ParticipantAddForm({ draft, onDraftChange, onSubmit, parties }: 
         </div>
       </div>
       <button className={primaryButtonClasses} type="submit" disabled={!draft.partyId || !draft.role}>
-        Add participant
+        Dodaj učesnika
       </button>
     </form>
   )
