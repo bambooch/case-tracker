@@ -1,6 +1,7 @@
 package com.ping.case_tracker.casework.infrastructure.persistence.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.ping.case_tracker.casework.domain.model.records.Note;
 import com.ping.case_tracker.casework.domain.repository.NoteRepository;
@@ -25,8 +26,20 @@ public class JpaNoteRepository implements NoteRepository {
     }
 
     @Override
+    public Note update(Note note) {
+        NoteEntity saved = repository.save(
+            new NoteEntity(note.id(), note.caseId(), note.content(), note.author(), note.createdAt()));
+        return toDomain(saved);
+    }
+
+    @Override
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Optional<Note> findById(Long id) {
+        return repository.findById(id).map(this::toDomain);
     }
 
     @Override

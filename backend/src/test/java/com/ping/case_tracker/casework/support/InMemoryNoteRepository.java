@@ -2,6 +2,7 @@ package com.ping.case_tracker.casework.support;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.ping.case_tracker.casework.domain.model.records.Note;
@@ -21,8 +22,20 @@ public class InMemoryNoteRepository implements NoteRepository {
     }
 
     @Override
+    public Note update(Note note) {
+        notes.removeIf(n -> n.id().equals(note.id()));
+        notes.add(note);
+        return note;
+    }
+
+    @Override
     public void deleteById(Long id) {
         notes.removeIf(n -> n.id().equals(id));
+    }
+
+    @Override
+    public Optional<Note> findById(Long id) {
+        return notes.stream().filter(n -> n.id().equals(id)).findFirst();
     }
 
     @Override

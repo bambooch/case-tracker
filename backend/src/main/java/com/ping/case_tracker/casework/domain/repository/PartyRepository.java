@@ -9,6 +9,10 @@ public interface PartyRepository {
 
     Party save(Party party);
 
+    Party update(Party party);
+
+    void deleteById(Long id);
+
     Optional<Party> findById(Long id);
 
     List<Party> findAll();

@@ -6,7 +6,7 @@ import java.time.Instant;
 
 import com.ping.case_tracker.casework.domain.model.records.Note;
 import com.ping.case_tracker.casework.domain.repository.NoteRepository;
-import com.ping.case_tracker.casework.infrastructure.persistence.JpaNoteRepository;
+import com.ping.case_tracker.casework.infrastructure.persistence.repository.JpaNoteRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

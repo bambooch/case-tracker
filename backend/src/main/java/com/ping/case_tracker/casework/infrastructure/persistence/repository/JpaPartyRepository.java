@@ -25,6 +25,17 @@ public class JpaPartyRepository implements PartyRepository {
     }
 
     @Override
+    public Party update(Party party) {
+        PartyEntity saved = repository.save(new PartyEntity(party.id(), party.name(), party.email()));
+        return toDomain(saved);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    @Override
     public Optional<Party> findById(Long id) {
         return repository.findById(id).map(this::toDomain);
     }

@@ -3,7 +3,9 @@ package com.ping.case_tracker.api.controller;
 import java.util.List;
 
 import com.ping.case_tracker.api.dto.note.AddNoteRequest;
+import com.ping.case_tracker.api.dto.note.UpdateNoteRequest;
 import com.ping.case_tracker.api.dto.participant.AddParticipantRequest;
+import com.ping.case_tracker.api.dto.participant.UpdateParticipantRequest;
 import com.ping.case_tracker.api.dto.cases.CaseDetailResponse;
 import com.ping.case_tracker.api.dto.cases.CaseSummaryResponse;
 import com.ping.case_tracker.api.dto.cases.CreateCaseRequest;
@@ -96,6 +98,19 @@ public class CaseController {
         return toNoteResponse(noteService.addNote(id, request.content(), request.author()));
     }
 
+    @Operation(summary = "Get a note by ID")
+    @GetMapping("/{id}/notes/{noteId}")
+    public NoteResponse getNote(@PathVariable Long id, @PathVariable Long noteId) {
+        return toNoteResponse(noteService.findById(noteId));
+    }
+
+    @Operation(summary = "Update a note")
+    @PutMapping("/{id}/notes/{noteId}")
+    public NoteResponse updateNote(@PathVariable Long id, @PathVariable Long noteId,
+            @Valid @RequestBody UpdateNoteRequest request) {
+        return toNoteResponse(noteService.updateNote(noteId, request.content()));
+    }
+
     @Operation(summary = "Remove a note from a case")
     @DeleteMapping("/{id}/notes/{noteId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -106,8 +121,19 @@ public class CaseController {
     @Operation(summary = "Add a party as a participant on a case")
     @PostMapping("/{id}/participants")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addParticipant(@PathVariable Long id, @Valid @RequestBody AddParticipantRequest request) {
-        partyService.addParticipant(id, request.partyId(), request.role());
+    public ParticipantResponse addParticipant(@PathVariable Long id, @Valid @RequestBody AddParticipantRequest request) {
+        CaseParticipant participant = partyService.addParticipant(id, request.partyId(), request.role());
+        Party party = partyService.findById(participant.partyId());
+        return new ParticipantResponse(participant.partyId(), party.name(), participant.role().name());
+    }
+
+    @Operation(summary = "Update a participant's role on a case")
+    @PutMapping("/{id}/participants/{partyId}")
+    public ParticipantResponse updateParticipant(@PathVariable Long id, @PathVariable Long partyId,
+            @Valid @RequestBody UpdateParticipantRequest request) {
+        CaseParticipant participant = partyService.updateParticipant(id, partyId, request.role());
+        Party party = partyService.findById(participant.partyId());
+        return new ParticipantResponse(participant.partyId(), party.name(), participant.role().name());
     }
 
     @Operation(summary = "Remove a participant from a case")

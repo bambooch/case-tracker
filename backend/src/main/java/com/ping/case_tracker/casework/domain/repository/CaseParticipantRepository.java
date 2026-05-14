@@ -8,6 +8,8 @@ public interface CaseParticipantRepository {
 
     CaseParticipant save(CaseParticipant participant);
 
+    CaseParticipant update(CaseParticipant participant);
+
     void deleteByCaseIdAndPartyId(Long caseId, Long partyId);
 
     List<CaseParticipant> findByCaseId(Long caseId);

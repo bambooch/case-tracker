@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.ping.case_tracker.casework.domain.model.records.CaseParticipant;
 import com.ping.case_tracker.casework.domain.repository.CaseParticipantRepository;
 import com.ping.case_tracker.casework.domain.model.enums.PartyRole;
-import com.ping.case_tracker.casework.infrastructure.persistence.JpaCaseParticipantRepository;
+import com.ping.case_tracker.casework.infrastructure.persistence.repository.JpaCaseParticipantRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

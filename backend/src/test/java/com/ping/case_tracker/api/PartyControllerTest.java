@@ -6,6 +6,8 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.ping.case_tracker.api.controller.GlobalExceptionHandler;
+import com.ping.case_tracker.api.controller.PartyController;
 import com.ping.case_tracker.casework.application.PartyService;
 import com.ping.case_tracker.casework.support.InMemoryPartyRepository;
 import com.ping.case_tracker.casework.support.InMemoryCaseParticipantRepository;

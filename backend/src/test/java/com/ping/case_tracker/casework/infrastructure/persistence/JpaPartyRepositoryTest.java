@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ping.case_tracker.casework.domain.model.records.Party;
 import com.ping.case_tracker.casework.domain.repository.PartyRepository;
-import com.ping.case_tracker.casework.infrastructure.persistence.JpaPartyRepository;
+import com.ping.case_tracker.casework.infrastructure.persistence.repository.JpaPartyRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

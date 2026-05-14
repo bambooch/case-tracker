@@ -25,6 +25,13 @@ public class JpaCaseParticipantRepository implements CaseParticipantRepository {
     }
 
     @Override
+    public CaseParticipant update(CaseParticipant participant) {
+        CaseParticipantEntity saved = repository.save(
+            new CaseParticipantEntity(participant.caseId(), participant.partyId(), participant.role()));
+        return toDomain(saved);
+    }
+
+    @Override
     public void deleteByCaseIdAndPartyId(Long caseId, Long partyId) {
         repository.deleteById(new CaseParticipantEntity.CaseParticipantId(caseId, partyId));
     }

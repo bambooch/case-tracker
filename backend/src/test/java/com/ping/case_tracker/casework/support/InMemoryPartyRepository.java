@@ -21,6 +21,18 @@ public class InMemoryPartyRepository implements PartyRepository {
     }
 
     @Override
+    public Party update(Party party) {
+        parties.removeIf(p -> p.id().equals(party.id()));
+        parties.add(party);
+        return party;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        parties.removeIf(p -> p.id().equals(id));
+    }
+
+    @Override
     public Optional<Party> findById(Long id) {
         return parties.stream().filter(p -> p.id().equals(id)).findFirst();
     }

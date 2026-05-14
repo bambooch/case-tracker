@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ping.case_tracker.api.dto.party.CreatePartyRequest;
 import com.ping.case_tracker.api.dto.party.PartyResponse;
+import com.ping.case_tracker.api.dto.party.UpdatePartyRequest;
 import com.ping.case_tracker.casework.application.PartyService;
 import com.ping.case_tracker.casework.domain.model.records.Party;
 
@@ -12,9 +13,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -37,6 +40,12 @@ public class PartyController {
         return partyService.findAll().stream().map(this::toResponse).toList();
     }
 
+    @Operation(summary = "Get a party by ID")
+    @GetMapping("/{id}")
+    public PartyResponse getParty(@PathVariable Long id) {
+        return toResponse(partyService.findById(id));
+    }
+
     @Operation(summary = "Create a party")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -44,10 +53,17 @@ public class PartyController {
         return toResponse(partyService.createParty(request.name(), request.email()));
     }
 
-    @Operation(summary = "Get a party by ID")
-    @GetMapping("/{id}")
-    public PartyResponse getParty(@PathVariable Long id) {
-        return toResponse(partyService.findById(id));
+    @Operation(summary = "Update a party")
+    @PutMapping("/{id}")
+    public PartyResponse updateParty(@PathVariable Long id, @Valid @RequestBody UpdatePartyRequest request) {
+        return toResponse(partyService.updateParty(id, request.name(), request.email()));
+    }
+
+    @Operation(summary = "Delete a party")
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteParty(@PathVariable Long id) {
+        partyService.deleteParty(id);
     }
 
     private PartyResponse toResponse(Party party) {
