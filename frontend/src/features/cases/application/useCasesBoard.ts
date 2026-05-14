@@ -36,15 +36,17 @@ export function useCasesBoard() {
     void load()
   }, [])
 
-  async function submitCreate() {
+  async function submitCreate(): Promise<boolean> {
     setErrors((currentErrors) => ({ ...currentErrors, create: '' }))
 
     try {
       const createdCase = await createCase(createDraft)
       setCases((currentCases) => [...currentCases, createdCase])
       setCreateDraft(emptyCaseDraft)
+      return true
     } catch {
       setErrors((currentErrors) => ({ ...currentErrors, create: 'Could not create case.' }))
+      return false
     }
   }
 
@@ -62,9 +64,9 @@ export function useCasesBoard() {
     setEditDraft(emptyCaseDraft)
   }
 
-  async function submitEdit() {
+  async function submitEdit(): Promise<boolean> {
     if (editingCaseId === null) {
-      return
+      return false
     }
 
     setErrors((currentErrors) => ({ ...currentErrors, edit: '' }))
@@ -77,8 +79,10 @@ export function useCasesBoard() {
         ),
       )
       cancelEditing()
+      return true
     } catch {
       setErrors((currentErrors) => ({ ...currentErrors, edit: 'Could not update case.' }))
+      return false
     }
   }
 

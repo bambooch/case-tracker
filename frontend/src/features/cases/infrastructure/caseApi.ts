@@ -1,3 +1,4 @@
+import type { CaseDetail } from '../domain/caseDetail'
 import type { CaseDraft } from '../domain/caseDraft'
 import type { CaseSummary } from '../domain/caseSummary'
 
@@ -44,4 +45,14 @@ export async function deleteCase(caseId: number) {
   if (!response.ok) {
     throw new Error('Could not delete case.')
   }
+}
+
+export async function getCaseDetail(caseId: number) {
+  const response = await fetch(`/api/cases/${caseId}`)
+
+  if (!response.ok) {
+    throw new Error('Could not load case detail.')
+  }
+
+  return (await response.json()) as CaseDetail
 }
