@@ -12,19 +12,18 @@ import com.ping.case_tracker.api.controller.GlobalExceptionHandler;
 import com.ping.case_tracker.casework.application.CaseService;
 import com.ping.case_tracker.casework.application.NoteService;
 import com.ping.case_tracker.casework.application.PartyService;
+import com.ping.case_tracker.casework.support.InMemoryCaseParticipantRepository;
 import com.ping.case_tracker.casework.support.InMemoryCaseRepository;
 import com.ping.case_tracker.casework.support.InMemoryNoteRepository;
 import com.ping.case_tracker.casework.support.InMemoryPartyRepository;
-import com.ping.case_tracker.casework.support.InMemoryCaseParticipantRepository;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-
 
 @WebMvcTest(CaseController.class)
 @Import({
@@ -162,39 +161,5 @@ class CaseControllerTest {
     void getCaseByIdForUnknownIdReturnsNotFound() throws Exception {
         this.mockMvc.perform(get("/api/cases/999"))
             .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void addNoteToCaseReturnsCreated() throws Exception {
-        this.mockMvc.perform(post("/api/cases/1/notes")
-                .contentType(APPLICATION_JSON)
-                .content("""
-                    {
-                    "content": "Important note",
-                    "author": "John"
-                    }
-                    """))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.id").isNumber())
-            .andExpect(jsonPath("$.caseId").value(1))
-            .andExpect(jsonPath("$.content").value("Important note"))
-            .andExpect(jsonPath("$.author").value("John"));
-    }
-
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    void deleteNoteReturnsNoContent() throws Exception {
-        this.mockMvc.perform(post("/api/cases/1/notes")
-                .contentType(APPLICATION_JSON)
-                .content("""
-                    {
-                    "content": "To be deleted"
-                    }
-                    """))
-            .andExpect(status().isCreated());
-
-        this.mockMvc.perform(delete("/api/cases/1/notes/1"))
-            .andExpect(status().isNoContent());
     }
 }

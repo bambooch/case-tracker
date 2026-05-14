@@ -2,16 +2,12 @@ package com.ping.case_tracker.api.controller;
 
 import java.util.List;
 
-import com.ping.case_tracker.api.dto.note.AddNoteRequest;
-import com.ping.case_tracker.api.dto.note.UpdateNoteRequest;
-import com.ping.case_tracker.api.dto.participant.AddParticipantRequest;
-import com.ping.case_tracker.api.dto.participant.UpdateParticipantRequest;
 import com.ping.case_tracker.api.dto.cases.CaseDetailResponse;
 import com.ping.case_tracker.api.dto.cases.CaseSummaryResponse;
 import com.ping.case_tracker.api.dto.cases.CreateCaseRequest;
+import com.ping.case_tracker.api.dto.cases.UpdateCaseRequest;
 import com.ping.case_tracker.api.dto.note.NoteResponse;
 import com.ping.case_tracker.api.dto.participant.ParticipantResponse;
-import com.ping.case_tracker.api.dto.cases.UpdateCaseRequest;
 import com.ping.case_tracker.casework.application.CaseService;
 import com.ping.case_tracker.casework.application.NoteService;
 import com.ping.case_tracker.casework.application.PartyService;
@@ -91,65 +87,15 @@ public class CaseController {
         caseService.deleteCase(id);
     }
 
-    @Operation(summary = "Add a note to a case")
-    @PostMapping("/{id}/notes")
-    @ResponseStatus(HttpStatus.CREATED)
-    public NoteResponse addNote(@PathVariable Long id, @Valid @RequestBody AddNoteRequest request) {
-        return toNoteResponse(noteService.addNote(id, request.content(), request.author()));
-    }
-
-    @Operation(summary = "Get a note by ID")
-    @GetMapping("/{id}/notes/{noteId}")
-    public NoteResponse getNote(@PathVariable Long id, @PathVariable Long noteId) {
-        return toNoteResponse(noteService.findById(noteId));
-    }
-
-    @Operation(summary = "Update a note")
-    @PutMapping("/{id}/notes/{noteId}")
-    public NoteResponse updateNote(@PathVariable Long id, @PathVariable Long noteId,
-            @Valid @RequestBody UpdateNoteRequest request) {
-        return toNoteResponse(noteService.updateNote(noteId, request.content()));
-    }
-
-    @Operation(summary = "Remove a note from a case")
-    @DeleteMapping("/{id}/notes/{noteId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteNote(@PathVariable Long id, @PathVariable Long noteId) {
-        noteService.deleteNote(noteId);
-    }
-
-    @Operation(summary = "Add a party as a participant on a case")
-    @PostMapping("/{id}/participants")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ParticipantResponse addParticipant(@PathVariable Long id, @Valid @RequestBody AddParticipantRequest request) {
-        CaseParticipant participant = partyService.addParticipant(id, request.partyId(), request.role());
-        Party party = partyService.findById(participant.partyId());
-        return new ParticipantResponse(participant.partyId(), party.name(), participant.role().name());
-    }
-
-    @Operation(summary = "Update a participant's role on a case")
-    @PutMapping("/{id}/participants/{partyId}")
-    public ParticipantResponse updateParticipant(@PathVariable Long id, @PathVariable Long partyId,
-            @Valid @RequestBody UpdateParticipantRequest request) {
-        CaseParticipant participant = partyService.updateParticipant(id, partyId, request.role());
-        Party party = partyService.findById(participant.partyId());
-        return new ParticipantResponse(participant.partyId(), party.name(), participant.role().name());
-    }
-
-    @Operation(summary = "Remove a participant from a case")
-    @DeleteMapping("/{id}/participants/{partyId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeParticipant(@PathVariable Long id, @PathVariable Long partyId) {
-        partyService.removeParticipant(id, partyId);
-    }
-
     private CaseSummaryResponse toSummaryResponse(Case c) {
         return new CaseSummaryResponse(c.id(), c.title(), c.status().name(),
             caseService.attentionLevelFor(c.status()).name());
     }
 
     private CaseDetailResponse toDetailResponse(Case c, List<Note> notes, List<CaseParticipant> participants) {
-        List<NoteResponse> noteResponses = notes.stream().map(this::toNoteResponse).toList();
+        List<NoteResponse> noteResponses = notes.stream()
+            .map(n -> new NoteResponse(n.id(), n.caseId(), n.content(), n.author(), n.createdAt()))
+            .toList();
         List<ParticipantResponse> participantResponses = participants.stream()
             .map(p -> {
                 Party party = partyService.findById(p.partyId());
@@ -158,9 +104,5 @@ public class CaseController {
             .toList();
         return new CaseDetailResponse(c.id(), c.title(), c.status().name(),
             caseService.attentionLevelFor(c.status()).name(), noteResponses, participantResponses);
-    }
-
-    private NoteResponse toNoteResponse(Note note) {
-        return new NoteResponse(note.id(), note.caseId(), note.content(), note.author(), note.createdAt());
     }
 }
