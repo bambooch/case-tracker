@@ -36,3 +36,6 @@ build/
 /package-lock.json
 /npm-debug.log*
 /frontend/dist/
+
+### Environment ###
+.env
