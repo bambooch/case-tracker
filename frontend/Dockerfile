@@ -10,5 +10,8 @@ RUN npm run build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
+COPY nginx.conf /etc/nginx/templates/http.conf.template
+COPY nginx.https.conf /etc/nginx/templates/https.conf.template
+COPY 10-select-nginx-config.sh /docker-entrypoint.d/10-select-nginx-config.sh
+RUN chmod +x /docker-entrypoint.d/10-select-nginx-config.sh
+EXPOSE 80 443
