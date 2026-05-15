@@ -12,6 +12,7 @@ import { caseStatusLabels, caseStatusOptions } from '../../domain/casePresentati
 import { deleteCase, getCaseDetail, updateCase } from '../../infrastructure/caseApi'
 import {
   attentionBadgeClasses,
+  attentionLabels,
   dangerButtonClasses,
   inputClasses,
   primaryButtonClasses,
@@ -159,7 +160,7 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${attentionBadgeClasses[detail.attentionLevel] ?? 'bg-stone-200 text-stone-700 ring-1 ring-inset ring-stone-300'}`}
                   >
-                    {detail.attentionLevel}
+                    {attentionLabels[detail.attentionLevel] ?? detail.attentionLevel}
                   </span>
                 </div>
               </div>

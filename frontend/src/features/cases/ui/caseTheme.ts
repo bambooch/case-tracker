@@ -10,6 +10,12 @@ export const attentionBadgeClasses: Record<string, string> = {
   ARCHIVE: 'bg-stone-200 text-stone-700 ring-1 ring-inset ring-stone-300',
 }
 
+export const attentionLabels: Record<string, string> = {
+  IMMEDIATE: 'Hitno',
+  FOLLOW_UP: 'Kontrola',
+  ARCHIVE: 'Arhiva',
+}
+
 export const inputClasses =
   'w-full rounded-2xl border border-stone-300 bg-white/90 px-4 py-3 text-slate-900 shadow-sm outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100'
 

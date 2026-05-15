@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import type { CaseSummary } from '../../domain/caseSummary'
-import { attentionBadgeClasses, dangerButtonClasses, primaryButtonClasses, secondaryButtonClasses, statusBadgeClasses } from '../caseTheme'
+import { attentionBadgeClasses, attentionLabels, dangerButtonClasses, primaryButtonClasses, secondaryButtonClasses, statusBadgeClasses } from '../caseTheme'
 
 type CaseListItemProps = {
   caseSummary: CaseSummary
@@ -28,7 +28,7 @@ export function CaseListItem({ caseSummary, onDelete }: CaseListItemProps) {
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${attentionBadgeClasses[caseSummary.attentionLevel] ?? 'bg-stone-200 text-stone-700 ring-1 ring-inset ring-stone-300'}`}
             >
-              {caseSummary.attentionLevel}
+              {attentionLabels[caseSummary.attentionLevel] ?? caseSummary.attentionLevel}
             </span>
           </div>
           <p className="mt-1 text-sm text-slate-400">Predmet #{caseSummary.id}</p>
