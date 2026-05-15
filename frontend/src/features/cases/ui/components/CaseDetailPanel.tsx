@@ -31,6 +31,8 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<Tab>('notes')
   const [isEditing, setIsEditing] = useState(false)
+  const notes = detail.notes ?? []
+  const participants = detail.participants ?? []
   const [editDraft, setEditDraft] = useState<CaseDraft>({
     title: detail.title,
     status: detail.status as CaseDraft['status'],
@@ -39,8 +41,8 @@ function CaseDetailContent({ detail, parties, onDetailUpdate }: ContentProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteError, setDeleteError] = useState('')
 
-  const notesHook = useCaseNotes(detail.id, detail.notes)
-  const participantsHook = useCaseParticipants(detail.id, detail.participants)
+  const notesHook = useCaseNotes(detail.id, notes)
+  const participantsHook = useCaseParticipants(detail.id, participants)
 
   function startEditing() {
     setEditDraft({ title: detail.title, status: detail.status as CaseDraft['status'] })

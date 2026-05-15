@@ -200,22 +200,35 @@ describe('App', () => {
   })
 
   it('updates a case from the list', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(createJsonResponse([]))
-      .mockResolvedValueOnce(createJsonResponse({
-        id: 1,
-        title: 'Missing documents',
-        status: 'OPEN',
-        attentionLevel: 'IMMEDIATE',
-        notes: [],
-        participants: [],
-      }))
-      .mockResolvedValueOnce(createJsonResponse({
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init) => {
+      const url = typeof input === 'string' ? input : input.toString()
+
+      if (url === '/api/parties') {
+        return createJsonResponse([])
+      }
+
+      if (url === '/api/cases/1' && !init?.method) {
+        return createJsonResponse({
+          id: 1,
+          title: 'Missing documents',
+          status: 'OPEN',
+          attentionLevel: 'IMMEDIATE',
+          notes: [],
+          participants: [],
+        })
+      }
+
+      if (url === '/api/cases/1' && init?.method === 'PUT') {
+        return createJsonResponse({
           id: 1,
           title: 'Updated documents',
           status: 'IN_REVIEW',
           attentionLevel: 'FOLLOW_UP',
-        }))
+        })
+      }
+
+      throw new Error(`Unexpected fetch call: ${String(url)}`)
+    })
 
     renderAt('/cases/1')
 
