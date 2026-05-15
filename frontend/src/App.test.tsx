@@ -1,40 +1,48 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
 
+function renderAt(path = '/cases') {
+  window.history.pushState({}, '', path)
+  render(<App />)
+}
+
+function createJsonResponse(body: unknown, ok = true) {
+  return {
+    ok,
+    json: async () => body,
+  } as Response
+}
+
 describe('App', () => {
   it('renders cases returned by the API', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      json: async () => [
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(createJsonResponse([
         {
           id: 1,
           title: 'Missing documents',
           status: 'OPEN',
           attentionLevel: 'IMMEDIATE',
         },
-      ],
-    } as Response)
+      ]))
 
-    render(<App />)
+    renderAt()
 
     expect(await screen.findByText('Missing documents')).toBeInTheDocument()
     expect(screen.getByText('OPEN')).toBeInTheDocument()
   })
 
   it('renders the case list without bullets', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      json: async () => [
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(createJsonResponse([
         {
           id: 1,
           title: 'Missing documents',
           status: 'OPEN',
           attentionLevel: 'IMMEDIATE',
         },
-      ],
-    } as Response)
+      ]))
 
-    render(<App />)
+    renderAt()
 
     await screen.findByText('Missing documents')
 
@@ -45,44 +53,42 @@ describe('App', () => {
   })
 
   it('renders a create case form', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      json: async () => [],
-    } as Response)
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(createJsonResponse([]))
 
-    render(<App />)
+    renderAt()
 
-    await screen.findByRole('heading', { name: 'Cases' })
+    const user = userEvent.setup()
 
-    expect(screen.getByLabelText('Title')).toBeInTheDocument()
+    await screen.findByRole('heading', { name: 'Aktivni predmeti' })
+    await user.click(screen.getByRole('button', { name: '+ Novi predmet' }))
+
+    expect(screen.getByRole('heading', { name: 'Novi predmet' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Naziv')).toBeInTheDocument()
     expect(screen.getByLabelText('Status')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Create case' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Kreiraj predmet' })).toBeInTheDocument()
   })
 
   it('submits the title and status for a new case', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({
-        json: async () => [],
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          id: 7,
-          title: 'Missing intake form',
-          status: 'OPEN',
-          attentionLevel: 'SOON',
-        }),
-      } as Response)
+      .mockResolvedValueOnce(createJsonResponse([]))
+      .mockResolvedValueOnce(createJsonResponse({
+        id: 7,
+        title: 'Missing intake form',
+        status: 'OPEN',
+        attentionLevel: 'SOON',
+      }))
 
-    render(<App />)
+    renderAt()
 
     const user = userEvent.setup()
 
-    await user.type(screen.getByLabelText('Title'), 'Missing intake form')
+    await screen.findByRole('heading', { name: 'Aktivni predmeti' })
+    await user.click(screen.getByRole('button', { name: '+ Novi predmet' }))
+    await user.type(screen.getByLabelText('Naziv'), 'Missing intake form')
     await user.selectOptions(screen.getByLabelText('Status'), 'OPEN')
-    await user.click(screen.getByRole('button', { name: 'Create case' }))
+    await user.click(screen.getByRole('button', { name: 'Kreiraj predmet' }))
 
-    expect(fetchSpy).toHaveBeenNthCalledWith(
-      2,
+    expect(fetchSpy).toHaveBeenCalledWith(
       '/api/cases',
       expect.objectContaining({
         method: 'POST',
@@ -99,26 +105,23 @@ describe('App', () => {
 
   it('shows the new case in the list after a successful create', async () => {
     vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({
-        json: async () => [],
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          id: 7,
-          title: 'Missing intake form',
-          status: 'OPEN',
-          attentionLevel: 'SOON',
-        }),
-      } as Response)
+      .mockResolvedValueOnce(createJsonResponse([]))
+      .mockResolvedValueOnce(createJsonResponse({
+        id: 7,
+        title: 'Missing intake form',
+        status: 'OPEN',
+        attentionLevel: 'SOON',
+      }))
 
-    render(<App />)
+    renderAt()
 
     const user = userEvent.setup()
 
-    await user.type(screen.getByLabelText('Title'), 'Missing intake form')
+    await screen.findByRole('heading', { name: 'Aktivni predmeti' })
+    await user.click(screen.getByRole('button', { name: '+ Novi predmet' }))
+    await user.type(screen.getByLabelText('Naziv'), 'Missing intake form')
     await user.selectOptions(screen.getByLabelText('Status'), 'OPEN')
-    await user.click(screen.getByRole('button', { name: 'Create case' }))
+    await user.click(screen.getByRole('button', { name: 'Kreiraj predmet' }))
 
     expect(await screen.findByText('Missing intake form')).toBeInTheDocument()
     expect(screen.getByText('OPEN')).toBeInTheDocument()
@@ -126,110 +129,107 @@ describe('App', () => {
 
   it('shows an error message when creating a case fails', async () => {
     vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({
-        json: async () => [],
-      } as Response)
+      .mockResolvedValueOnce(createJsonResponse([]))
       .mockRejectedValueOnce(new Error('Request failed'))
 
-    render(<App />)
+    renderAt()
 
     const user = userEvent.setup()
 
-    await user.type(screen.getByLabelText('Title'), 'Missing intake form')
+    await screen.findByRole('heading', { name: 'Aktivni predmeti' })
+    await user.click(screen.getByRole('button', { name: '+ Novi predmet' }))
+    await user.type(screen.getByLabelText('Naziv'), 'Missing intake form')
     await user.selectOptions(screen.getByLabelText('Status'), 'OPEN')
-    await user.click(screen.getByRole('button', { name: 'Create case' }))
+    await user.click(screen.getByRole('button', { name: 'Kreiraj predmet' }))
 
     expect(await screen.findByText('Could not create case.')).toBeInTheDocument()
   })
 
   it('shows an error message when create returns a non-OK response', async () => {
     vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({
-        json: async () => [],
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: false,
-        json: async () => ({ message: 'Validation failed' }),
-      } as Response)
+      .mockResolvedValueOnce(createJsonResponse([]))
+      .mockResolvedValueOnce(createJsonResponse({ message: 'Validation failed' }, false))
 
-    render(<App />)
+    renderAt()
 
     const user = userEvent.setup()
 
-    await user.type(screen.getByLabelText('Title'), 'Missing intake form')
+    await screen.findByRole('heading', { name: 'Aktivni predmeti' })
+    await user.click(screen.getByRole('button', { name: '+ Novi predmet' }))
+    await user.type(screen.getByLabelText('Naziv'), 'Missing intake form')
     await user.selectOptions(screen.getByLabelText('Status'), 'OPEN')
-    await user.click(screen.getByRole('button', { name: 'Create case' }))
+    await user.click(screen.getByRole('button', { name: 'Kreiraj predmet' }))
 
     expect(await screen.findByText('Could not create case.')).toBeInTheDocument()
   })
 
   it('clears the create form after a successful create', async () => {
     vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({
-        json: async () => [],
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          id: 7,
-          title: 'Missing intake form',
-          status: 'OPEN',
-          attentionLevel: 'SOON',
-        }),
-      } as Response)
+      .mockResolvedValueOnce(createJsonResponse([]))
+      .mockResolvedValueOnce(createJsonResponse({
+        id: 7,
+        title: 'Missing intake form',
+        status: 'OPEN',
+        attentionLevel: 'SOON',
+      }))
 
-    render(<App />)
+    renderAt()
 
     const user = userEvent.setup()
-    const titleInput = screen.getByLabelText('Title') as HTMLInputElement
+
+    await screen.findByRole('heading', { name: 'Aktivni predmeti' })
+    await user.click(screen.getByRole('button', { name: '+ Novi predmet' }))
+
+    const titleInput = screen.getByLabelText('Naziv') as HTMLInputElement
     const statusSelect = screen.getByLabelText('Status') as HTMLSelectElement
 
     await user.type(titleInput, 'Missing intake form')
     await user.selectOptions(statusSelect, 'OPEN')
-    await user.click(screen.getByRole('button', { name: 'Create case' }))
+    await user.click(screen.getByRole('button', { name: 'Kreiraj predmet' }))
 
     await screen.findByText('Missing intake form')
 
-    expect(titleInput).toHaveValue('')
-    expect(statusSelect).toHaveValue('')
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Novi predmet' })).not.toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: '+ Novi predmet' }))
+
+    expect(screen.getByLabelText('Naziv')).toHaveValue('')
+    expect(screen.getByLabelText('Status')).toHaveValue('')
   })
 
   it('updates a case from the list', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({
-        json: async () => [
-          {
-            id: 1,
-            title: 'Missing documents',
-            status: 'OPEN',
-            attentionLevel: 'IMMEDIATE',
-          },
-        ],
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
+      .mockResolvedValueOnce(createJsonResponse([]))
+      .mockResolvedValueOnce(createJsonResponse({
+        id: 1,
+        title: 'Missing documents',
+        status: 'OPEN',
+        attentionLevel: 'IMMEDIATE',
+        notes: [],
+        participants: [],
+      }))
+      .mockResolvedValueOnce(createJsonResponse({
           id: 1,
           title: 'Updated documents',
           status: 'IN_REVIEW',
           attentionLevel: 'FOLLOW_UP',
-        }),
-      } as Response)
+        }))
 
-    render(<App />)
+    renderAt('/cases/1')
 
     const user = userEvent.setup()
 
-    await screen.findByText('Missing documents')
+    await screen.findByRole('heading', { name: 'Missing documents' })
 
-    await user.click(screen.getByRole('button', { name: 'Edit Missing documents' }))
-    await user.clear(screen.getByLabelText('Edit title'))
-    await user.type(screen.getByLabelText('Edit title'), 'Updated documents')
-    await user.selectOptions(screen.getByLabelText('Edit status'), 'IN_REVIEW')
-    await user.click(screen.getByRole('button', { name: 'Save changes' }))
+    await user.click(screen.getByRole('button', { name: 'Uredi' }))
+    await user.clear(screen.getByLabelText('Naziv'))
+    await user.type(screen.getByLabelText('Naziv'), 'Updated documents')
+    await user.selectOptions(screen.getByLabelText('Status'), 'IN_REVIEW')
+    await user.click(screen.getByRole('button', { name: 'Spremi izmjene' }))
 
-    expect(fetchSpy).toHaveBeenNthCalledWith(
-      2,
+    expect(fetchSpy).toHaveBeenCalledWith(
       '/api/cases/1',
       expect.objectContaining({
         method: 'PUT',
@@ -249,29 +249,29 @@ describe('App', () => {
 
   it('deletes a case from the list', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce({
-        json: async () => [
+      .mockResolvedValueOnce(createJsonResponse([
           {
             id: 1,
             title: 'Missing documents',
             status: 'OPEN',
             attentionLevel: 'IMMEDIATE',
           },
-        ],
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-      } as Response)
+        ]))
+      .mockResolvedValueOnce({ ok: true } as Response)
 
-    render(<App />)
+    renderAt()
 
     const user = userEvent.setup()
 
     await screen.findByText('Missing documents')
 
-    await user.click(screen.getByRole('button', { name: 'Delete Missing documents' }))
+    await user.click(screen.getByRole('button', { name: 'Obriši' }))
+    await user.click(screen.getByRole('button', { name: 'Potvrdi' }))
 
-    expect(fetchSpy).toHaveBeenNthCalledWith(2, '/api/cases/1', { method: 'DELETE' })
-    expect(screen.queryByText('Missing documents')).not.toBeInTheDocument()
+    expect(fetchSpy).toHaveBeenCalledWith('/api/cases/1', { method: 'DELETE' })
+
+    await waitFor(() => {
+      expect(screen.queryByText('Missing documents')).not.toBeInTheDocument()
+    })
   })
 })
