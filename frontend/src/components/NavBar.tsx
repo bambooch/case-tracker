@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom'
 
+import { SiteQrCode } from './SiteQrCode'
+
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
     isActive
@@ -14,13 +16,16 @@ export function NavBar() {
         <NavLink to="/" className="font-display text-xl font-bold tracking-tight text-white">
           Evidencija predmeta
         </NavLink>
-        <div className="flex gap-1">
-          <NavLink to="/cases" className={linkClass}>
-            Predmeti
-          </NavLink>
-          <NavLink to="/parties" className={linkClass}>
-            Stranke
-          </NavLink>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1">
+            <NavLink to="/cases" className={linkClass}>
+              Predmeti
+            </NavLink>
+            <NavLink to="/parties" className={linkClass}>
+              Stranke
+            </NavLink>
+          </div>
+          <SiteQrCode />
         </div>
       </div>
     </nav>
